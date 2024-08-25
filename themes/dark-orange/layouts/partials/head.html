@@ -1,0 +1,13 @@
+<head>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{ if .Description }}{{ .Description }}{{ else }}{{ .Site.Params.Description }}{{ end }}">
+  <title>{{ .Title }} | {{ .Site.Title }}</title>
+  <link rel="stylesheet" href="{{ "/fonts/hack.css" | relURL }}" />
+  <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}" />
+  {{ range .Site.Params.custom_css -}}
+  <link rel="stylesheet" href="{{ . | absURL }}">
+  {{- end }}
+</head>

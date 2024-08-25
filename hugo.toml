@@ -1,0 +1,5 @@
+baseURL = "https://blog.lucasvalente.xyz/"
+languageCode = "en-us"
+title = "lucas valente"
+theme = "dark-orange"
+enableEmoji = true

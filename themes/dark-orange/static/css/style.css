@@ -1,0 +1,144 @@
+:root {
+  --bg-primary: #171717;
+
+  --text-header: #ff9500;
+  --text-body: #dddddd;
+  --text-dim-weak: #888888;
+  --text-dim-strong: #555555;
+  --text-dim-mega: #222222;
+}
+
+body {
+  margin: 0 0 0 0;
+  background-color: var(--bg-primary);
+
+  font-family: "Hack";
+  color: var(--text-body);
+}
+
+div.main-container {
+  overflow: auto;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 25px 0 25px;
+  min-height: 100vh;
+  border-right: 1px solid var(--text-dim-mega);
+  border-left: 1px solid var(--text-dim-mega);
+}
+
+/* navbar */
+nav {
+  font-size: 1.3em;
+
+  & > ul {
+    padding-left: 0;
+    padding-right: 0;
+    font-weight: bold;
+
+    & > li {
+      display: inline;
+      list-style-type: none;
+      margin: 0 10px 0 10px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      &::before {
+        content: "/";
+        color: var(--text-header);
+      }
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    & * {
+      color: var(--text-header);
+      text-decoration: none;
+    }
+  }
+}
+
+/* header and footer */
+
+footer {
+  text-align: center;
+  border-top: 1px solid var(--text-dim-mega);
+}
+
+/* text and post contents*/
+h1, h2, h3, h4, h5  {
+  color: var(--text-header);
+
+  &::before {
+    content: "# ";
+  }
+}
+
+h1.page-title {
+  background-color: var(--text-header);
+  color: var(--bg-primary);
+  
+  padding: 5px 15px 5px 15px;
+
+  &::before {
+    content: "";
+  }
+}
+
+time[pubdate] {
+  color: var(--text-dim-weak);
+}
+
+p.summary {
+  font-style: italic;
+}
+
+ul.terms {
+  padding: 0 0 0 0;
+
+  & > li {
+    display: inline;
+
+    &::before {
+      content: "#";
+    }
+  }
+}
+
+blockquote {
+  border-left: 2px solid var(--text-dim-strong);
+  margin: 0 15px 0 15px;
+  padding-left: 15px;
+  font-style: italic;
+}
+
+a {
+  color: var(--text-body);
+  font-weight: 800;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  color: var(--text-dim-mega);
+  background-color: var(--text-dim-mega);
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+ul {
+  padding-left: 10px;
+  padding-right: 10px;
+
+  & > li {
+    list-style-type: none;
+
+    &::before {
+      content: "> ";
+      color: var(--text-dim-strong);
+    }
+  }
+}

@@ -1,0 +1,11 @@
+name = 'Dark Orange'
+license = 'MIT'
+description = 'My blog theme'
+
+tags = ['blog']
+
+enableEmoji = true
+
+[author]
+  name = 'Lucas Valente'
+  homepage = 'lucasvalente.xyz'

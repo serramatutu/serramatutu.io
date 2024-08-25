@@ -1,0 +1,14 @@
+{{ define "main" }}
+  <h1 class="page-title">List of {{ .Title }}</h1>
+  {{ .Content }}
+  {{ range .Pages }}
+    <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+    {{ $date := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
+    {{ $prettyDate := $date | time.Format ":date_medium" }}
+    <time pubdate datetime="{{ $date }}">{{ $prettyDate }}</time>
+
+    <p>
+    {{ .Summary }}
+    </p>
+  {{ end }}
+{{ end }}
