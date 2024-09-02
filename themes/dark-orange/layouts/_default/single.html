@@ -1,23 +1,23 @@
 {{ define "main" }}
+  <div class="preface">
   <h1 class="page-title">{{ .Title }}</h1>
 
-  {{ $isSmallSummary := strings.RuneCount .Summary | compare.Ge 70 }}
-  {{ if $isSmallSummary }}
-  <p class="summary">
-    {{ .Summary }}
-  <p>
-  {{ end }}
+    {{ if compare.Default true $.Params.show_date | and .Lastmod }}
+    {{ $date := .Lastmod | time.Format "2006-01-02T15:04:05-07:00" }}
+    {{ $prettyDate := $date | time.Format ":date_medium" }}
+    <time pubdate datetime="{{ $date }}">last updated {{ $prettyDate }}</time>
+    {{ end }}
 
-  {{ $hasTags := .GetTerms "tags" | len | compare.Gt 0 }}
-  {{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
+    {{ $isSmallSummary := strings.RuneCount .Summary | compare.Ge site.Params.smallSummaryThreshold }}
+    {{ if $isSmallSummary }}
+    <p class="summary">
+      {{ .Summary }}
+    <p>
+    {{ end }}
 
-  {{ if or $isSmallSummary $hasTags }}
-  <hr>
-  {{ end }}
-
-  {{ $date := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
-  {{ $prettyDate := $date | time.Format ":date_medium" }}
-  <time pubdate datetime="{{ $date }}">{{ $prettyDate }}</time>
-
+    {{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
+  </div>
+  <div class="content">
   {{ .Content }}
+  </div>
 {{ end }}

@@ -2,6 +2,7 @@
   --bg-primary: #171717;
 
   --text-header: #ff9500;
+  --text-highlight: #fca62d;
   --text-body: #dddddd;
   --text-dim-weak: #888888;
   --text-dim-strong: #555555;
@@ -29,24 +30,24 @@ div.main-container {
 /* navbar */
 nav {
   font-size: 1.3em;
+  border-bottom: 1px solid var(--text-dim-mega);
+
+  margin-bottom: 20px;
 
   & > ul {
     padding-left: 0;
     padding-right: 0;
     font-weight: bold;
 
-    & > li {
-      display: inline;
-      list-style-type: none;
-      margin: 0 10px 0 10px;
+    margin: 10px 0 10px 0;
 
-      &:first-child {
-        margin-left: 0;
-      }
+    & > li {
+      display: inline-block;
+      list-style-type: none;
+      margin: 5px 0 5px 0;
 
       &::before {
-        content: "/";
-        color: var(--text-header);
+        display: none;
       }
       
       &:hover {
@@ -55,9 +56,17 @@ nav {
     }
 
     & * {
-      color: var(--text-header);
+      /* color: var(--text-header); */
       text-decoration: none;
     }
+  }
+}
+
+.function {
+  text-decoration: none;
+  &::after {
+    content: "()";
+    color: var(--text-header);
   }
 }
 
@@ -68,24 +77,23 @@ footer {
   border-top: 1px solid var(--text-dim-mega);
 }
 
-/* text and post contents*/
-h1, h2, h3, h4, h5  {
-  color: var(--text-header);
+div.preface {
+  margin-bottom: 20px;
 
-  &::before {
-    content: "# ";
+  &::after {
+    content: "---";
   }
 }
 
 h1.page-title {
-  background-color: var(--text-header);
-  color: var(--bg-primary);
-  
-  padding: 5px 15px 5px 15px;
+  color: var(--text-body);
 
-  &::before {
-    content: "";
-  }
+  font-size: 3.5vh; 
+  
+  padding: 5px 15px 5px 0;
+
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 time[pubdate] {
@@ -105,6 +113,14 @@ ul.terms {
     &::before {
       content: "#";
     }
+  }
+}
+
+h1, h2, h3, h4, h5 {
+  &::before {
+    content: "/";
+    color: var(--text-header);
+    margin-left: 3px;
   }
 }
 
@@ -136,9 +152,28 @@ ul {
   & > li {
     list-style-type: none;
 
+    &:first-child {
+      margin-left: 0;
+    }
+
     &::before {
       content: "> ";
       color: var(--text-dim-strong);
     }
   }
+}
+
+div.content {
+  line-height: 1.5em;
+}
+
+p.subtitle {
+  color: var(--text-dim-weak);
+}
+
+.dimmed {
+  color: var(--text-dim-weak);
+}
+.highlight {
+  color: var(--text-highlight);
 }

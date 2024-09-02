@@ -1,5 +1,15 @@
-baseURL = "https://blog.lucasvalente.xyz/"
+baseURL = "https://serramatutu.io/"
 languageCode = "en-us"
-title = "lucas valente"
 theme = "dark-orange"
 enableEmoji = true
+
+title = "serramatutu"
+
+[params]
+smallSummaryThreshold = 300
+
+# Allow raw HTML
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true

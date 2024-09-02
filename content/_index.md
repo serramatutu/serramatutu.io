@@ -1,7 +1,8 @@
 ---
-title: "my little blog"
+title: "serramatutu.io"
 description: "my ever-growing collection of thoughts and reflections"
-date: 2024-08-25
+summary: "my ever-growing collection of thoughts and reflections"
+lastmod: 2024-09-02
 layout: single
 ---
 
@@ -12,12 +13,10 @@ This is my ever-growing collection of thoughts and reflections. Please, make you
 Here you might find:
 - My attempts at making "art": songs I made :cd:, pictures I took :camera:, pixel art :paintbrush:
 - Posts about computer science, programming and self-hosting :computer:
-- Reports on my cooking experiments
+- Reports on my cooking experiments :cook:
+- Some reflections about my career as a Software Engineer so far :brain:
 - And more!
 
-I hope you like it! If you don't, I honestly don't really care though... 
-
-> citation
-> lorem
+I hope you like it!
 
 \- Lucas
