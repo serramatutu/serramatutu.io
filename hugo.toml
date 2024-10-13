@@ -10,6 +10,8 @@ smallSummaryThreshold = 300
 
 # Allow raw HTML
 [markup]
+  [markup.highlight]
+    style = "github-dark"
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true

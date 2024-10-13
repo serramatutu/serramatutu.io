@@ -1,5 +1,5 @@
 :root {
-  --bg-primary: #171717;
+  --bg-primary: #050505;
 
   --text-header: #ff9500;
   --text-highlight: #fca62d;
@@ -176,4 +176,14 @@ p.subtitle {
 }
 .highlight {
   color: var(--text-highlight);
+}
+
+code {
+  & > span {
+    padding: 0 20px 0 20px;
+
+    &::first-child() {
+      padding-top: 20px;
+    }
+  }
 }

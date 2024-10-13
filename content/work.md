@@ -64,15 +64,33 @@ I started my career there as an intern right after High School, and progressed t
 
 ## Chatbot analytics platform
 
-TODO
+At Wavy, the number of chatbots was growing, and we needed a scalable way of tracking interactions and billing. I was tasked with solving this problem.
+
+The solution I came up with was a simple event ingestion AWS Lambda endpoint that would take in "events" and publish them to an SQS queue. At the other end of the queue, there would be a batch writer which would ingest the data onto a BigQuery `chatbot_events` table, which had `created_at`, `type`, `bot_id`, `converstion_id` and `payload` fields. This allowed the company to turn questions such as "How many items were added to the cart this month in customer X's bot?" into SQL that ran in our analytics database.
+
+I didn't know it at the time, but this simple system ended up being perfected over time and it became the company-wide de-facto way of tracking bot analytics.
+
 
 ## Automating customer service of large food marketplace
 
-TODO
+One of our key accounts was [iFood](https://www.ifood.com.br/), a large online food marketplace which was growing a lot at the time. With growth, came the challenge of scaling their customer service department to handle thousands of support tickets daily.
 
-## Automated customer service for restaurants
+To assist them with this project, we developed a chatbot using Google's Dialogflow, which would connect to their Zendesk instance and perform tasks like triaging tickets, automatically asking for documentation upfront before handing off to a human agent, and performing requests on their backend APIs.
 
-TODO
+The chatbot was quite large (over 500 NLP intents, more than 100 different flows), and it helped them improve their average ticket resolution time from over 30min to 5min, and increased customer satisfaction metrics by over 30%. It was also a significant cost-saver since it greatly improved the efficiency of their customer support agents.
+
+
+## Ordering food through messaging
+
+The final project I worked at Wavy was also in collaboration with iFood. It consisted in providing a messaging-first experience to ordering food. We developed an in-house chatbot engine that would integrate with NLP providers and iFood's backend APIs to allow customers to turn sentences such as "I would like to order a pizza" into an actual order in their API. 
+
+Our main challenge was structured search, since the same product could be represented very differently by different restaurants, for example:
+- Restaurant A would categorize `Large Pizza` and `Small Pizza` as different `products`, and the toppings would be `variants` of such products.
+- Restaurant B would categorize `Margheritta Pizza` and `Pepperoni Pizza` as different `products`, and the sizes would be the `variants`.
+
+To solve that, we experimented with a lot of different options, but ended up settling with representing every product/variant as a string concatenation of all its attributes, and then fuzzy matching against it based on the extracted entities.
+
+The project was very experimental, and it ended up being discontinued after a while.
 
 
 # Transform Data
@@ -93,7 +111,24 @@ Despite those technical challenges, my main challenge for this project was commu
 
 ## Boards
 
-TODO
+At Transform, we were building a Semantic Layer (which I still work on at dbt Labs!), through which users could define and query their business metrics. At the time, we were building our own querying interface which was similar to a BI tool. It allowed users to pick from different chart types, slice by different dimensions and save their queries. One of the components of such interface was named "Boards", and it gave users the ability to create and save their own dashboards with many charts, sections etc.
+
+Me and another backend engineer were responsible for the database and APIs. We chose to model a dashboard as a tree of components, since it could contain sections within sections with many charts. In the Postgres database, each Board's metadata was stored in a `boards` table, and each node contained in a dashboard was stored in a `board_nodes` table, which was indexed by `board_id`. This made it easy to reconstruct the tree from top to bottom using a single SQL query similar to the following
+
+```sql
+SELECT 
+  id, depth, parent_id, type, title, ...
+FROM 
+  board_nodes
+WHERE 
+  board_id = $board_id
+ORDER BY 
+  depth
+```
+
+We contemplated performing data validation to ensure components wouldn't overlap, but that involved a lot of geometric computations that were not trivial for the backend. Instead, the engineering team agreed that the frontend would be responsible for submitting geometrically-coherent data, and it would self-heal in case the data stored in the database was wrong.
+
+The API layer was a simple GraphQL wrapper around those tables, through which the frontend could query for `boards`, `boards.nodes` and mutate a dashboard via mutations such as `boardsCreate`, `boardsDeleteNodes`, `boardsUpdateNodes` etc.
 
 ## GraphQL diff tool
 
@@ -109,4 +144,4 @@ Despite being a simple hacky solution that was at most a few hundred lines long,
 
 Transform Data was acquired by dbt Labs, and, after some rearrangements, finishing college and moving to a new country (that's why there's a 1-year gap between Transform Data and dbt Labs), I now work there on their [Semantic Layer](https://www.getdbt.com/product/semantic-layer).
 
-The work I am currently performing at dbt Labs is a little too recent to talk about publicly, but I promise it's exciting stuff!
+So far, I've contributed to [MetricFlow](https://github.com/dbt-labs/metricflow) and the open source Semantic Layer [Python SDK](https://github.com/dbt-labs/semantic-layer-sdk-python/). The rest of the work I am currently performing at dbt Labs is a little too recent to talk about publicly, but I promise it's exciting stuff!
