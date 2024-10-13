@@ -6,7 +6,7 @@ enableEmoji = true
 title = "serramatutu"
 
 [params]
-smallSummaryThreshold = 300
+smallSummaryThreshold = 500
 
 # Allow raw HTML
 [markup]
