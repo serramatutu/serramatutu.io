@@ -19,7 +19,7 @@ body {
 
 div.main-container {
   overflow: auto;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 0 25px 0 25px;
   min-height: 100vh;
@@ -117,12 +117,31 @@ ul.terms {
 }
 
 h1, h2, h3, h4, h5 {
+  line-height: 1.2em;
   &::before {
-    content: "/";
     color: var(--text-header);
     margin-left: 3px;
+    margin-right: 3px;
   }
 }
+
+h1 {
+  margin-top: 70px;
+  &:first-of-type {
+    margin-top: 0;
+  }
+  &::before {
+    content: "/";
+  }
+}
+
+
+h2, h3, h4, h5 {
+  &::before {
+    content: "*";
+  }
+}
+
 
 blockquote {
   border-left: 2px solid var(--text-dim-strong);
@@ -152,12 +171,20 @@ ul {
   & > li {
     list-style-type: none;
 
+    margin-top: 5px;
+    margin-bottom: 5px;
+
     &:first-child {
       margin-left: 0;
     }
 
     &::before {
       content: "> ";
+      color: var(--text-dim-strong);
+    }
+
+    & > ul > li::before {
+      content: ">> ";
       color: var(--text-dim-strong);
     }
   }
@@ -179,6 +206,10 @@ p.subtitle {
 }
 
 code {
+  background-color: var(--text-dim-mega);
+  padding: 3px;
+  border-radius: 3px;
+
   & > span {
     padding: 0 20px 0 20px;
 
