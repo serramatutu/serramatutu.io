@@ -205,10 +205,16 @@ p.subtitle {
   color: var(--text-highlight);
 }
 
+pre {
+  overflow-x: scroll;
+}
+
 code {
   background-color: var(--text-dim-mega);
   padding: 3px;
   border-radius: 3px;
+
+  overflow-x: scroll;
 
   & > span {
     padding: 0 20px 0 20px;
