@@ -6,7 +6,7 @@ summary: |
   However, these are usually not enough to guarantee you produce clean commit histories and good and easy 
   to review pull requests. They're also not enough to recover your work when you inevitably screw up.
   This blog post will address all these things by explaining some techniques I wish I had learned earlier.
-lastmod: 2024-10-13
+lastmod: 2024-10-22
 layout: single
 ---
 
@@ -196,7 +196,7 @@ It's worth noting that this will also rewrite your commits (like all other rebas
 
 We've had to type a lot to make all this happen: we had to create the `Fix typo` commit, then do `git rebase --interactive`, then move lines around and write things to the rebase file.
 
-You can make this quicker by commiting directly to a fixup commit, using `git commit --fixup <parent-of-the-broken-commit>`. This will generate a commit that starts with `fixup!`. Then, you can run `git rebase -i --autosquash parent-of-the-broken-commit>~1`. This will generate a rebase file with all the `fixup` commits in the correct places. Just save that file and you're all set!
+You can make this quicker by commiting directly to a fixup commit, using `git commit --fixup <sha-of-the-broken-commit>`. This will generate a commit that starts with `fixup!`. Then, you can run `git rebase -i --autosquash <sha-of-the-broken-commit>~1`. This will generate a rebase file with all the `fixup` commits in the correct places. Just save that file and you're all set!
 
 To avoid having to use `--autosquash` everytime, you can configure git to use it by default with `git config rebase.autoSquash true`.
 
@@ -495,4 +495,4 @@ That's all! I hope this helps you write better commit histories and pull request
 
 # Acknowledgements
 
-I'd like to thank Tim Connor, the great Senior Staff software engineer that taught me all of this during a [dbt Labs](https://www.getdbt.com/) company off-site. This knowledge has saved me countless hours of head scratching and greatly improved the way I use git and submit PRs for review.
+I'd like to thank Tim Connor, the great software engineer that taught me all of this during a [dbt Labs](https://www.getdbt.com/) company off-site. This knowledge has saved me from a lot of head scratching and greatly improved the way I use git and submit PRs for review.
