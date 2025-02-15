@@ -1,19 +1,32 @@
 :root {
-  --bg-primary: #050505;
-
+  --bg-primary: #ffffff;
   --text-header: #ff9500;
-  --text-highlight: #fca62d;
-  --text-body: #dddddd;
-  --text-dim-weak: #888888;
-  --text-dim-strong: #555555;
-  --text-dim-mega: #222222;
+  --text-highlight: #ff9500;
+  --text-body: #111111;
+  --text-dim-weak: #444444;
+  --text-dim-strong: #999999;
+  --text-dim-mega: #dddddd;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #050505;
+    --text-header: #ff9500;
+    --text-highlight: #fca62d;
+    --text-body: #dddddd;
+    --text-dim-weak: #888888;
+    --text-dim-strong: #555555;
+    --text-dim-mega: #222222;
+  }
 }
 
 body {
   margin: 0 0 0 0;
   background-color: var(--bg-primary);
 
-  font-family: "Hack";
+  font-family: "PT Serif";
+
   color: var(--text-body);
 }
 
@@ -44,7 +57,7 @@ nav {
     & > li {
       display: inline-block;
       list-style-type: none;
-      margin: 5px 0 5px 0;
+      margin: 5px 10px 5px 0;
 
       &::before {
         display: none;
@@ -59,14 +72,6 @@ nav {
       /* color: var(--text-header); */
       text-decoration: none;
     }
-  }
-}
-
-.function {
-  text-decoration: none;
-  &::after {
-    content: "()";
-    color: var(--text-header);
   }
 }
 
@@ -131,14 +136,7 @@ h1 {
     margin-top: 0;
   }
   &::before {
-    content: "/";
-  }
-}
-
-
-h2, h3, h4, h5 {
-  &::before {
-    content: "*";
+    content: "/ ";
   }
 }
 
@@ -215,6 +213,8 @@ code {
   border-radius: 3px;
 
   overflow-x: scroll;
+
+  font-family: "Hack";
 
   & > span {
     padding: 0 20px 0 20px;

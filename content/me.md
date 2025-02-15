@@ -1,5 +1,5 @@
 ---
-title: "whoami"
+title: "me"
 description: "A small introuction to myself"
 summary: "A small introuction to myself"
 date: 2024-09-02
