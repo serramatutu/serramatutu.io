@@ -144,4 +144,31 @@ Despite being a simple hacky solution that was at most a few hundred lines long,
 
 Transform Data was acquired by dbt Labs, and, after some rearrangements, finishing college and moving to a new country (that's why there's a 1-year gap between Transform Data and dbt Labs), I now work there on their [Semantic Layer](https://www.getdbt.com/product/semantic-layer).
 
-So far, I've contributed to [MetricFlow](https://github.com/dbt-labs/metricflow) and the open source Semantic Layer [Python SDK](https://github.com/dbt-labs/semantic-layer-sdk-python/). The rest of the work I am currently performing at dbt Labs is a little too recent to talk about publicly, but I promise it's exciting stuff!
+## Onboarding
+
+TODO
+
+## Semantic Layer SDK for Python
+
+Apart from some sporadic contributions to [MetricFlow](https://github.com/dbt-labs/metricflow), I am the main maintainer and main contributor of dbt's Semantic Layer [Python SDK](https://github.com/dbt-labs/semantic-layer-sdk-python/).
+
+I had initially created it to streamline how we were running our internal end to end tests so that we didn't need to use the APIs directly. It quickly demonstrated itself to be quite useful, and so we decided to make it a customer-facing tool that is now used by many of our customers to integrate with our APIs. 
+
+I stood up the repo from scratch including:
+- the Python project, using [uv](https://github.com/astral-sh/uvhttps://github.com/astral-sh/uv) and [hatch](https://github.com/pypa/hatch), with strict typechecking using [basedpyright](https://docs.basedpyright.com/latest/).
+- our unit and integration test suite, which tests all sync and async code in all supported python versions (latest through the last LTS version), using multiple [dependency resolution strategies](https://docs.astral.sh/uv/concepts/resolution/#resolution-strategy).
+- [documentation](https://docs.getdbt.com/docs/dbt-cloud-apis/sl-python) on our website.
+- public-facing changelog management using [changie](https://changie.dev/).
+- a fully automated release process that opens a PR with all the bumped versions and changelog updates, then tests and releases to PyPI once it's merged, then tags the commit and creates a GitHub Release.
+
+The SDK itself is not rocket science, but there are some interesting architectural decisions worth noting:
+- I deliberately made any "protocol" logic be totally IO free. This made it trivial implement the same protocol over multiple transports (requests, aiohttp, arrow flight SQL). This also made testing the protocols very easy without any need of mocks.
+- The API can be either set to eager or lazy mode, making it possible to trade convenience of loading nested models for performance.
+- I made extensive use of reflection and dataclass metadata to "supercharge" our models. This includes adding tags to specify what fields are lazy loadable or not, and automatically generating DRY GraphQL (using fragments for nested models!) from the model definition itself without any extra code.
+
+## Semantic Layer Power BI integration
+
+TODO
+
+## Vortex
+
