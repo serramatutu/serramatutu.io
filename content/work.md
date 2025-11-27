@@ -2,7 +2,7 @@
 title: "work"
 description: "My long-form resume with more details about my past professional and academic experience."
 summary: "This page aims to document my past work and academic experiences in higher detail. You can think of it as a long-form resume."
-lastmod: 2024-09-02
+lastmod: 2025-11-27
 layout: single
 ---
 
@@ -146,7 +146,14 @@ Transform Data was acquired by dbt Labs, and, after some rearrangements, finishi
 
 ## Onboarding
 
-TODO
+I worked for a few months on restructuring the EPD (engineering, product and design) department's onboarding flow. The main problem we were trying to solve was 
+
+> How do we get new hires to be as effective as possible, as fast as possible?
+
+I joined a small team with two other coworkers who had setup an onboarding track with learning modules about different features of our product, optionally going deep into how they work technically. We had standups with new hires to answer their questions as they went through the learning modules, and there were also sporadic sync sessions with engineers/architects from each team to answer any questions new hires might have.
+
+After the onboarding program had been running for a while, we noticed time-to-first-PR drop significantly to only a few days, and we got feedback from teams that engineers were much better at making informed technical/product decisions right after they joined.
+
 
 ## Semantic Layer SDK for Python
 
@@ -166,9 +173,71 @@ The SDK itself is not rocket science, but there are some interesting architectur
 - The API can be either set to eager or lazy mode, making it possible to trade convenience of loading nested models for performance.
 - I made extensive use of reflection and dataclass metadata to "supercharge" our models. This includes adding tags to specify what fields are lazy loadable or not, and automatically generating DRY GraphQL (using fragments for nested models!) from the model definition itself without any extra code.
 
+
 ## Semantic Layer Power BI integration
 
-TODO
+The semantic layer team had the challenge of integrating with most mainstream BI tools. The most popular among Microsoft shops is Power BI, and so we needed to develop an integration for it. Me and another coworker worked on this for roughly 4 months.
 
-## Vortex
+The hardest part of this project was definitely discovery: figuring out what is/isn't possible in PowerBI, learning about all the new and legacy ways people use it, about Windows-specific stacks and how we'd integrate it all with our existing systems.
+
+After considering other possible options (building a DAX Analysis Service, pre-materializing all common queries), we ended up going for the following solution
+1. Building an ODBC to [Arrow Flight SQL](https://arrow.apache.org/docs/format/FlightSql.html) bridge driver, forked from Dremio's [ODBC-AFS](https://www.dremio.com/drivers/odbc/) driver. This allows Power BI to connect our Flight SQL service via ODBC.
+2. Building a [Power Query SDK](https://learn.microsoft.com/en-us/power-query/install-sdk) client to "glue" Power BI to the ODBC driver, allowing it to be configured nicely from the UI.
+3. Make a fake "catalog" with a `METRICS.ALL` table that has fake columns for each available metric and dimension.
+4. Modifying our [Apache Calcite](https://calcite.apache.org/)-based SQL parser to rewrite queries to this fake table from Power BI into MetricFlow's spec.
+
+For example, a query like
+
+```sql
+SELECT metric_1, metric_2
+FROM metrics.all
+GROUP BY dimension_1, metric_time__day
+WHERE metric_time__day > '2025-01-01'
+```
+
+Would get parsed into
+
+```python
+metricflow.query(
+    metrics=["query_1", "metric_2"],
+    dimensions=["dimension_1", "metric_time__day"],
+    where=["{{ Dimension('metric_time__day') }} > '2025-01-01"]
+)
+```
+
+We then issue the actual MetricFlow-generated SQL to the data platform, and rewrite the resultset back into the schema that Power BI expects.
+
+I definitely did not do all this alone, and had an excellent engineer alongside me (thank you, Diego!). I contributed most by:
+- Writing and debugging some of the Power Query SDK client code
+- Writing CI for signing the ODBC-AFS driver bridge DLL using our code-signing certificate
+- Figuring out how to make our plugin be "trusted" by PowerBI, this involved some arcane scripts to get our plugin to conform to Microsoft's proprietary `.pqx` format
+- Figuring out how to make all of this work via an [On-premises data gateway](https://learn.microsoft.com/en-us/power-bi/connect-data/service-gateway-onprem) so that the integration would work in Power BI Service (their cloud product)
+- Writing most of the [product documentation](https://docs.getdbt.com/docs/cloud-integrations/semantic-layer/power-bi)
+- Writing internal documentation and recording enablement videos to showcase how it works to our GTM org, who would be the ones selling it on the field
+
+
+## dbt Fusion 
+
+After working for so long on the Semantic Layer, I felt like it was time to explore something new. At this point I was already very curious about Rust and systems-level programming, and I wanted to start making a transition towards being a systems engineer.
+
+This is why I moved over to the [dbt Fusion](https://github.com/dbt-labs/dbt-fusion) Adapters team. This team works mainly on the I/O integration with different data warehouse products, and on standardizing them (to the extent possible) for use with dbt.
+
+There, so far, I've worked on:
+- Patching countless bugs and [dbt Core](https://github.com/dbt-labs/dbt-core) compatibility issues
+- Fixing data type issues that were plaguing us and our users. This required changes to the open source [ADBC driver](https://github.com/apache/arrow-adbc/pull/3604) and writing a more robust black-box [testing framework for our data types](https://github.com/dbt-labs/dbt-fusion/commit/6b87561c0de81e886d2c43e48c856c538e4fd4d1)
+- Adding support for BigQuery's [materialized views](https://docs.cloud.google.com/bigquery/docs/materialized-views-intro)
+- Refactoring some code to make it easier to add new adapter types and maintain them over time as our "portfolio" of adapters grows
+
+I would say the biggest challenge on working on this team is, in summary:
+
+> How do we stay backwards-compatible to a very successful and mature product (dbt Core) while building for the future?
+
+
+## Apache Arrow
+
+dbt Fusion makes heavy use of [Apache Arrow](https://arrow.apache.org/) and [DataFusion](https://datafusion.apache.org/). So far, I have contributed to the Arrow project by:
+
+- Submitting patches to [ADBC](https://github.com/apache/arrow-adbc/), mainly to improve their [BigQuery](https://cloud.google.com/bigquery) support.
+- (Alongside my great coworker Felipe) [Proposing](https://lists.apache.org/thread/h0ghltfds2bh6vvrkg7n787c1q4n0y5p) a new `arrow.timestamp_with_offset` canonical extension type to improve support for timestamps with timezone offsets per row. This involved a lot of back and forth discussion with the Arrow community, writing the Go and Rust implementation and attending to Arrow developer meetings.
+
 
