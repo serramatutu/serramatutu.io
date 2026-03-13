@@ -1,6 +1,6 @@
 baseURL = "https://serramatutu.io/"
 languageCode = "en-us"
-theme = "dark-orange"
+theme = "serramatutu"
 enableEmoji = true
 
 title = "serramatutu"
