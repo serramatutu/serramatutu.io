@@ -7,6 +7,7 @@ layout: single
 ---
 
 # High school
+
 <p class="subtitle">early 2016 to late 2018</p>
 
 I first got in contact with programming during my high school program at [COTUCA](https://cotuca.unicamp.br/cotuca/). There, I mostly played around with web development in PHP, NodeJS and raw HTML5/CSS/JS. I made a few games which have been long forgotten, and tried to get my head around how machine learning worked, though I mostly failed due my lacking knowledge of calculus and linear algebra at the time.
@@ -15,21 +16,22 @@ During that time, I worked as a student assistant, and would help other students
 
 Despite being formational years in my career as a Software Engineer, I will not elaborate more about the projects I worked on during high school for brevity.
 
-
 # University
+
 <p class="subtitle">early 2019 to mid 2023</p>
 
 During my 5 years as a Computer Science student at [UNICAMP](https://unicamp.br/), I worked on assignments, some small personal projects and a few larger ones. Apart from that, during most of my education, I also worked as a backend software developer for [Wavy](#wavy) and [Transform Data](#transform-data).
 
-
 ## Autonomous racing car telemetry
+
 <p class="subtitle">early 2020 to mid 2022</p>
 
-[Unicamp E-Racing](https://www.unicamperacing.com/) is my university's Formula Student team for the electric cars division. 
+[Unicamp E-Racing](https://www.unicamperacing.com/) is my university's Formula Student team for the electric cars division.
 
 My main body of work at the team was the autonomous racing car's telemetry. In short, our goal was to provide near real-time metrics of the race car.
 
 For that, me and the rest of the telemetry team had to write
+
 - **The agent**: a lightweight Python script that ran on the car's main board (NVidia Jetson Xavier) to collect CAN bus data, perform aggregation, categorize the data and send it in batches via a custom UDP-based network protocol.
 - **The ingestion controller**: another Python service that ran on the main base-station computer and would listen for UDP packets. It decompressed the incoming data and added it to a hashtable of ordered datapoints on our local Redis, while also updating an ordered set of batches used for indexing.
 - **The read API**: a REST API that would query the local Redis for snapshots of the data given a time window. It also had a websocket interface for subscribing to new datapoint batches belonging to any metric.
@@ -39,23 +41,24 @@ At the time, we did look into other metric-aggregators like Prometheus and Graph
 
 Fortunately, nowadays there are tools that fulfill those requirements such as [rerun](https://rerun.io/). It was a very fun project where I learned a lot regardless.
 
-
 ## Automated detection of faulty soldering in electronics
+
 <p class="subtitle">early 2023 to mid 2023</p>
 
-During my 1 year exchange to [Umeå University](https://www.umu.se/), as a part of an applied computer vision course, I was a part of a team which investigated the performance of different computer vision techniques when applied to detecting faulty soldering in electronics. 
+During my 1 year exchange to [Umeå University](https://www.umu.se/), as a part of an applied computer vision course, I was a part of a team which investigated the performance of different computer vision techniques when applied to detecting faulty soldering in electronics.
 
 The main goal was to assist a partner company (one key vendor of electronic components for industrial forestry machines) with the development of a better quality assurance pipeline that needed less human intervention. To reduce the problem complexity, our project was scoped at only one of their most manufactured boards, which contained a limited amount of solders in pre-determined positions.
 
 This project had 3 main phases:
+
 1. **Assembling a diverse dataset**: During this phase, we took thousands of pictures of our target component, and categorized all of them according to different control variables such as camera type (webcam, iPhone, DSLR), camera distance, camera angle, light color, ambient light (controlled, mild, intense).
 2. **Investigation of localization algorithms**: During this phase, we investigated the performance of different algorithms with _localizing_ all the interest points in the picture, so that they could be cropped and classified. The best performing algorithm was SIFT, but we also tried ORB, and combinations of simpler transforms and color thresholding.
-2. **Investigation of classification algorithms**: During this phase, we developed a simple classifier that would determine how much of the electronic connector was uncovered by the solder by applying a simple color mask and counting pixels. It was surprisingly effective and compute-efficient compared to our other machine-learning base algorithm, which performed better but required more compute. We concluded that the camera type, distance and ambient light color could seriously influence classifier efficiency.
+3. **Investigation of classification algorithms**: During this phase, we developed a simple classifier that would determine how much of the electronic connector was uncovered by the solder by applying a simple color mask and counting pixels. It was surprisingly effective and compute-efficient compared to our other machine-learning base algorithm, which performed better but required more compute. We concluded that the camera type, distance and ambient light color could seriously influence classifier efficiency.
 
 The final report of this investigation was forwarded to the partner company.
 
-
 # Wavy
+
 <p class="subtitle">early 2019 to late 2020</p>
 
 Wavy (later acquired by [Sinch](https://www.sinch.com/)) was the largest enterprise messaging provider in Latin America, providing automated customer service solutions over SMS, WhatsApp, RCS and other text communication channels.
@@ -70,7 +73,6 @@ The solution I came up with was a simple event ingestion AWS Lambda endpoint tha
 
 I didn't know it at the time, but this simple system ended up being perfected over time and it became the company-wide de-facto way of tracking bot analytics.
 
-
 ## Automating customer service of large food marketplace
 
 One of our key accounts was [iFood](https://www.ifood.com.br/), a large online food marketplace which was growing a lot at the time. With growth, came the challenge of scaling their customer service department to handle thousands of support tickets daily.
@@ -79,12 +81,12 @@ To assist them with this project, we developed a chatbot using Google's Dialogfl
 
 The chatbot was quite large (over 500 NLP intents, more than 100 different flows), and it helped them improve their average ticket resolution time from over 30min to 5min, and increased customer satisfaction metrics by over 30%. It was also a significant cost-saver since it greatly improved the efficiency of their customer support agents.
 
-
 ## Ordering food through messaging
 
-The final project I worked at Wavy was also in collaboration with iFood. It consisted in providing a messaging-first experience to ordering food. We developed an in-house chatbot engine that would integrate with NLP providers and iFood's backend APIs to allow customers to turn sentences such as "I would like to order a pizza" into an actual order in their API. 
+The final project I worked at Wavy was also in collaboration with iFood. It consisted in providing a messaging-first experience to ordering food. We developed an in-house chatbot engine that would integrate with NLP providers and iFood's backend APIs to allow customers to turn sentences such as "I would like to order a pizza" into an actual order in their API.
 
 Our main challenge was structured search, since the same product could be represented very differently by different restaurants, for example:
+
 - Restaurant A would categorize `Large Pizza` and `Small Pizza` as different `products`, and the toppings would be `variants` of such products.
 - Restaurant B would categorize `Margheritta Pizza` and `Pepperoni Pizza` as different `products`, and the sizes would be the `variants`.
 
@@ -92,8 +94,8 @@ To solve that, we experimented with a lot of different options, but ended up set
 
 The project was very experimental, and it ended up being discontinued after a while.
 
-
 # Transform Data
+
 <p class="subtitle">early 2022 to early 2023</p>
 
 Transform Data (later acquired by [dbt Labs](https://www.getdbt.com/))
@@ -101,6 +103,7 @@ Transform Data (later acquired by [dbt Labs](https://www.getdbt.com/))
 ## Slack integration
 
 I started my journey at Transform by writing a custom Slack integration that could render charts and send them as embedded images in Slack. This project involved:
+
 - Performing OAuth 2.0 with the Slack API, including token rotation and invalidation.
 - Fetching time-series data from our internal metrics APIs.
 - Spinning up a headless Chromium instance that could load the chart renderer page, hydrate it with data and take a screenshot using [pyppeteer](https://github.com/pyppeteer/pyppeteer).
@@ -116,13 +119,13 @@ At Transform, we were building a Semantic Layer (which I still work on at dbt La
 Me and another backend engineer were responsible for the database and APIs. We chose to model a dashboard as a tree of components, since it could contain sections within sections with many charts. In the Postgres database, each Board's metadata was stored in a `boards` table, and each node contained in a dashboard was stored in a `board_nodes` table, which was indexed by `board_id`. This made it easy to reconstruct the tree from top to bottom using a single SQL query similar to the following
 
 ```sql
-SELECT 
+SELECT
   id, depth, parent_id, type, title, ...
-FROM 
+FROM
   board_nodes
-WHERE 
+WHERE
   board_id = $board_id
-ORDER BY 
+ORDER BY
   depth
 ```
 
@@ -134,19 +137,19 @@ The API layer was a simple GraphQL wrapper around those tables, through which th
 
 At some point, I got the feedback from my manager that one of the expectations for Senior engineers is to have more impact across the organization. Meanwhile, I noticed our frontend team would always complain that the backend team broke their code by making backward-incompatible changes to our GraphQL APIs.
 
-I saw an opportunity of having more impact by writing a simple look-ahead parser that would generate a list of breaking changes made to a GraphQL schema based on the previous schema. I then wrapped it into a simple Github Actions bot that would automatically comment that list on PRs that introduced breaking changes to the API, and request a mandatory approval from the frontend team on that PR. 
+I saw an opportunity of having more impact by writing a simple look-ahead parser that would generate a list of breaking changes made to a GraphQL schema based on the previous schema. I then wrapped it into a simple Github Actions bot that would automatically comment that list on PRs that introduced breaking changes to the API, and request a mandatory approval from the frontend team on that PR.
 
 Despite being a simple hacky solution that was at most a few hundred lines long, the impact on the "happiness factor" of the frontend team was great. By doing this, I learned that next-level backend engineers like the one I aspire to be maximize their impact by helping others do their job better.
 
-
 # dbt Labs
+
 <p class="subtitle">early 2024 to present</p>
 
 Transform Data was acquired by dbt Labs, and, after some rearrangements, finishing college and moving to a new country (that's why there's a 1-year gap between Transform Data and dbt Labs), I now work there on their [Semantic Layer](https://www.getdbt.com/product/semantic-layer).
 
 ## Onboarding
 
-I worked for a few months on restructuring the EPD (engineering, product and design) department's onboarding flow. The main problem we were trying to solve was 
+I worked for a few months on restructuring the EPD (engineering, product and design) department's onboarding flow. The main problem we were trying to solve was
 
 > How do we get new hires to be as effective as possible, as fast as possible?
 
@@ -154,14 +157,14 @@ I joined a small team with two other coworkers who had setup an onboarding track
 
 After the onboarding program had been running for a while, we noticed time-to-first-PR drop significantly to only a few days, and we got feedback from teams that engineers were much better at making informed technical/product decisions right after they joined.
 
-
 ## Semantic Layer SDK for Python
 
 Apart from some sporadic contributions to [MetricFlow](https://github.com/dbt-labs/metricflow), I am the main maintainer and main contributor of dbt's Semantic Layer [Python SDK](https://github.com/dbt-labs/semantic-layer-sdk-python/).
 
-I had initially created it to streamline how we were running our internal end to end tests so that we didn't need to use the APIs directly. It quickly demonstrated itself to be quite useful, and so we decided to make it a customer-facing tool that is now used by many of our customers to integrate with our APIs. 
+I had initially created it to streamline how we were running our internal end to end tests so that we didn't need to use the APIs directly. It quickly demonstrated itself to be quite useful, and so we decided to make it a customer-facing tool that is now used by many of our customers to integrate with our APIs.
 
 I stood up the repo from scratch including:
+
 - the Python project, using [uv](https://github.com/astral-sh/uvhttps://github.com/astral-sh/uv) and [hatch](https://github.com/pypa/hatch), with strict typechecking using [basedpyright](https://docs.basedpyright.com/latest/).
 - our unit and integration test suite, which tests all sync and async code in all supported python versions (latest through the last LTS version), using multiple [dependency resolution strategies](https://docs.astral.sh/uv/concepts/resolution/#resolution-strategy).
 - [documentation](https://docs.getdbt.com/docs/dbt-cloud-apis/sl-python) on our website.
@@ -169,10 +172,10 @@ I stood up the repo from scratch including:
 - a fully automated release process that opens a PR with all the bumped versions and changelog updates, then tests and releases to PyPI once it's merged, then tags the commit and creates a GitHub Release.
 
 The SDK itself is not rocket science, but there are some interesting architectural decisions worth noting:
+
 - I deliberately made any "protocol" logic be totally IO free. This made it trivial implement the same protocol over multiple transports (requests, aiohttp, arrow flight SQL). This also made testing the protocols very easy without any need of mocks.
 - The API can be either set to eager or lazy mode, making it possible to trade convenience of loading nested models for performance.
 - I made extensive use of reflection and dataclass metadata to "supercharge" our models. This includes adding tags to specify what fields are lazy loadable or not, and automatically generating DRY GraphQL (using fragments for nested models!) from the model definition itself without any extra code.
-
 
 ## Semantic Layer Power BI integration
 
@@ -181,6 +184,7 @@ The semantic layer team had the challenge of integrating with most mainstream BI
 The hardest part of this project was definitely discovery: figuring out what is/isn't possible in PowerBI, learning about all the new and legacy ways people use it, about Windows-specific stacks and how we'd integrate it all with our existing systems.
 
 After considering other possible options (building a DAX Analysis Service, pre-materializing all common queries), we ended up going for the following solution
+
 1. Building an ODBC to [Arrow Flight SQL](https://arrow.apache.org/docs/format/FlightSql.html) bridge driver, forked from Dremio's [ODBC-AFS](https://www.dremio.com/drivers/odbc/) driver. This allows Power BI to connect our Flight SQL service via ODBC.
 2. Building a [Power Query SDK](https://learn.microsoft.com/en-us/power-query/install-sdk) client to "glue" Power BI to the ODBC driver, allowing it to be configured nicely from the UI.
 3. Make a fake "catalog" with a `METRICS.ALL` table that has fake columns for each available metric and dimension.
@@ -208,6 +212,7 @@ metricflow.query(
 We then issue the actual MetricFlow-generated SQL to the data platform, and rewrite the resultset back into the schema that Power BI expects.
 
 I definitely did not do all this alone, and had an excellent engineer alongside me (thank you, Diego!). I contributed most by:
+
 - Writing and debugging some of the Power Query SDK client code
 - Writing CI for signing the ODBC-AFS driver bridge DLL using our code-signing certificate
 - Figuring out how to make our plugin be "trusted" by PowerBI, this involved some arcane scripts to get our plugin to conform to Microsoft's proprietary `.pqx` format
@@ -215,14 +220,14 @@ I definitely did not do all this alone, and had an excellent engineer alongside 
 - Writing most of the [product documentation](https://docs.getdbt.com/docs/cloud-integrations/semantic-layer/power-bi)
 - Writing internal documentation and recording enablement videos to showcase how it works to our GTM org, who would be the ones selling it on the field
 
-
-## dbt Fusion 
+## dbt Fusion
 
 After working for so long on the Semantic Layer, I felt like it was time to explore something new. At this point I was already very curious about Rust and systems-level programming, and I wanted to start making a transition towards being a systems engineer.
 
 This is why I moved over to the [dbt Fusion](https://github.com/dbt-labs/dbt-fusion) Adapters team. This team works mainly on the I/O integration with different data warehouse products, and on standardizing them (to the extent possible) for use with dbt.
 
 There, so far, I've worked on:
+
 - Patching countless bugs and [dbt Core](https://github.com/dbt-labs/dbt-core) compatibility issues
 - Fixing data type issues that were plaguing us and our users. This required changes to the open source [ADBC driver](https://github.com/apache/arrow-adbc/pull/3604) and writing a more robust black-box [testing framework for our data types](https://github.com/dbt-labs/dbt-fusion/commit/6b87561c0de81e886d2c43e48c856c538e4fd4d1)
 - Adding support for BigQuery's [materialized views](https://docs.cloud.google.com/bigquery/docs/materialized-views-intro)
@@ -232,12 +237,9 @@ I would say the biggest challenge on working on this team is, in summary:
 
 > How do we stay backwards-compatible to a very successful and mature product (dbt Core) while building for the future?
 
-
 ## Apache Arrow
 
 dbt Fusion makes heavy use of [Apache Arrow](https://arrow.apache.org/) and [DataFusion](https://datafusion.apache.org/). So far, I have contributed to the Arrow project by:
 
 - Submitting patches to [ADBC](https://github.com/apache/arrow-adbc/), mainly to improve their [BigQuery](https://cloud.google.com/bigquery) support.
 - (Alongside my great coworker Felipe) [Proposing](https://lists.apache.org/thread/h0ghltfds2bh6vvrkg7n787c1q4n0y5p) a new `arrow.timestamp_with_offset` canonical extension type to improve support for timestamps with timezone offsets per row. This involved a lot of back and forth discussion with the Arrow community, writing the Go and Rust implementation and attending to Arrow developer meetings.
-
-

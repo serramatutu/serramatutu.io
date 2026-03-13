@@ -1,0 +1,5 @@
+pre-commit:
+  jobs:
+    - name: format
+      run: "prettier --write '**/*.(css|md)'"
+      stage_fixed: true

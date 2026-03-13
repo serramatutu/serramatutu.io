@@ -8,7 +8,6 @@
   --text-dim-mega: #dddddd;
 }
 
-
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-primary: #050505;
@@ -62,7 +61,7 @@ nav {
       &::before {
         display: none;
       }
-      
+
       &:hover {
         text-decoration: underline;
       }
@@ -93,8 +92,8 @@ div.preface {
 h1.page-title {
   color: var(--text-body);
 
-  font-size: 3.5vh; 
-  
+  font-size: 3.5vh;
+
   padding: 5px 15px 5px 0;
 
   margin-top: 0;
@@ -121,7 +120,11 @@ ul.terms {
   }
 }
 
-h1, h2, h3, h4, h5 {
+h1,
+h2,
+h3,
+h4,
+h5 {
   line-height: 1.2em;
   &::before {
     color: var(--text-header);
@@ -139,7 +142,6 @@ h1 {
     content: "/ ";
   }
 }
-
 
 blockquote {
   border-left: 2px solid var(--text-dim-strong);
@@ -200,7 +202,8 @@ p.subtitle {
   color: var(--text-dim-weak);
 }
 
-code, .highlight {
+code,
+.highlight {
   background-color: var(--text-dim-mega);
   font-family: "Hack";
   border-radius: 3px;

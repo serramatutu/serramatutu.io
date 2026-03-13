@@ -11,6 +11,7 @@ Welcome, stranger.
 This is my ever-growing collection of thoughts and reflections. Please, make yourself comfortable, brew some tea :tea: and feel free to explore.
 
 Here you might find:
+
 - My attempts at making "art": songs I made :cd:, pictures I took :camera:, pixel art :paintbrush:
 - Posts about computer science, programming and self-hosting :computer:
 - Reports on my cooking experiments :cook:

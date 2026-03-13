@@ -13,6 +13,7 @@ layout: single
 # Preface
 
 First and foremost: this post assumes you already have some familiarity with git. It supposes you're already reasonably comfortable with:
+
 - Basic terminology such as "commit", "branch", "merge", "merge conflict", "pull request" etc
 - The basic "git flow" workflow:
   - Creating a new branch with `git branch`, `git switch` and `git checkout`
@@ -25,8 +26,8 @@ First and foremost: this post assumes you already have some familiarity with git
 
 If you're not yet familiar with these concepts, that's no shame! Go learn git basics and come back to this once you're ready :)
 
-
 With that out of the way, in this blog post we'll go over the following topics:
+
 - why you should care about having a clean commit history
 - why and how to use `git rebase` instead of `git merge` for syncing `main` onto your branch
 - using `git rebase --interactive` and `git commit --fixup` to fix past mistakes and address pull request comments
@@ -47,7 +48,6 @@ Before getting onto the meat and potatoes of the techniques this blog post cover
 I hope you're convinced by now :smile:
 
 With that out of the way, let's dive in!
-
 
 # Using `git rebase` to sync the `main` branch with your working branch
 
@@ -92,9 +92,10 @@ commit b': Add `method_a` to `MyClass`
 commit c': Call `MyClass.method_a` from `MyOtherClass`
 ```
 
-If you've been looking closely, you can see that the commit SHAs have changed: commit `a` was replaced by `a'`, `b` was replaced by `b'` and `c` was replaced by `c'`. This is totally fine, and it's expected since git commits are immutable by definition. 
+If you've been looking closely, you can see that the commit SHAs have changed: commit `a` was replaced by `a'`, `b` was replaced by `b'` and `c` was replaced by `c'`. This is totally fine, and it's expected since git commits are immutable by definition.
 
 Under the hood `git rebase`:
+
 1. checks out your new base `main`, a.k.a commit `z`
 2. applies the changeset of `a` onto `z`, resulting in `a'`
 3. applies the changeset of `b` onto `a'`, resulting in `b'`
@@ -103,38 +104,36 @@ Under the hood `git rebase`:
 
 Logically, your branch remains the same, but now you've got the changes from `z` without a merge commit to mess your beautiful history. Hooray! :smile:
 
-
 ## How do I sync back to my remote server?
 
 As we've just seen, even though your changes _look_ the same, they're actually represented by different commits after the rebase. As such, if you run `git push origin my-working-branch`, your remote git provider will refuse your changes. In this case, it's OK to `git push --force`.
 
 Quick note: if you've already asked for review on your changes, avoid force pushes as they can make it confusing for reviewers who are in the middle of a review. Also, from my experience, GitHub can sometimes get confused by force pushes and forget about PR comments, which makes force pushes not ideal in this case. If that's the case, prefer [fixup commits](#correcting-and-improving-past-commits) and only rebase at the last stage of review, right before merging.
 
-
 ## What if there are conflicts?
 
-In that case, git will pause the rebase and display a warning that tells you there was a conflict somewhere. Just go and fix your conflicts like you'd normally do during a `git merge` but, instead of `git add .` and `git commit`, now you'll run `git add .` and `git rebase --continue`. 
+In that case, git will pause the rebase and display a warning that tells you there was a conflict somewhere. Just go and fix your conflicts like you'd normally do during a `git merge` but, instead of `git add .` and `git commit`, now you'll run `git add .` and `git rebase --continue`.
 
 Differently from "merge" conflicts which are grouped in one big conflict set (during a merge you're trying to bring all new changes from `main` onto a single "merge commit" at the head of your branch), "rebase" conflicts might happen in stages. This is because `git rebase` applies one patch on top of each other, one at a time, so there could be conflicts during any of these applications. Don't let this scare you, though! Just solve them one by one, doing `git add .` and `git rebase --continue` until the whole rebase is complete.
 
 If you've messed up the rebase, you can always `git rebase --abort` to roll back to the state before you started the process!
-
 
 ## When should you merge instead of rebase?
 
 Do you want to seamlessly bring in new changes without making noise in the history? Use `git rebase`. Do you want to let others know of this sync between branches by creating a merge commit? Use `git merge`.
 
 I try to follow this general rule of thumb:
-- Use `git rebase` to sync downstream. For example: 
-  - to sync `main` onto your working branch 
+
+- Use `git rebase` to sync downstream. For example:
+  - to sync `main` onto your working branch
   - to sync a parent working branch onto a child working branch (we'll see why you'd want to do this later in the [stacking pull requests](#stacking-pull-requests) section)
 - Use `git merge` to sync upstream. For example:
   - to sync a working branch back onto `main` when you're done working on that feature
 
-
 # Using `git rebase -i` to modify past commits
 
 You're working on your branch, and you've already added a few commits `a`, `b` and `c`. Then, something happens and you realize there's a problem with one of your older commits:
+
 - you forgot to run your code formatter, or
 - you introduced a typo, or
 - you forgot to run tests and they're all breaking due to a stupid oversight, or
@@ -142,7 +141,7 @@ You're working on your branch, and you've already added a few commits `a`, `b` a
 - ...
 
 If the problem is in your latest commit (`c`), you can just fix it with `git commit --amend --no-edit` and call it a day. However, if your typo was introduced before that (let's say in commit `a`), a `git commit --amend` won't cut it.
-  
+
 A naive (and very time-consuming) solution to this problem is to `git reset HEAD~2`, re-add all your files and re-commit everything again. Not ideal.
 
 You get lazy, create a `Fix typo` (`Fix tests`, `Run formatter`, ...) commit and move on. Your history now looks like this:
@@ -177,12 +176,14 @@ pick cccccc Call `MyClass.method_a` from `MyOtherClass`
 ```
 
 We moved the `Fix typo` commit to the line after commit `a`, which introduced the typo. We also changed its instruction from `pick` to `fixup`. Now, when we save the file and quit the editor,, git will:
+
 1. Apply commit `a`'s changes (`pick`)
 2. Patch commit `a` with commit `d`'s changes, keeping only `a`'s message (`fixup`)
 3. Apply commit `b`'s changes (`pick`)
-3. Apply commit `c`'s changes (`pick`)
+4. Apply commit `c`'s changes (`pick`)
 
 Now, our commit history looks much nicer!
+
 ```text
 commit a': Refactor `MyClass` to improve performance     <-- the typo is fixed here
 commit b': Add `method_a` to `MyClass`
@@ -190,7 +191,6 @@ commit c': Call `MyClass.method_a` from `MyOtherClass`
 ```
 
 It's worth noting that this will also rewrite your commits (like all other rebases!), so you'll end up with `a'`, `b'`, and `c'`.
-
 
 ## Speeding it up with `git commit --fixup`
 
@@ -200,17 +200,16 @@ You can make this quicker by commiting directly to a fixup commit, using `git co
 
 To avoid having to use `--autosquash` everytime, you can configure git to use it by default with `git config rebase.autoSquash true`.
 
-
 ## Using fixup commits to address pull request comments
 
 `fixup!` commits are very convenient for asking for reviews. If one of your reviewers is not happy with a change in commit `b`, you can incorporate their feedback, create a `fixup!` commit on `b` and `git push`. Then, you reply to their comment, tell them that your new `fixup!` commit fixes the issue, and paste a link to the commit. Now, they have a reference to a commit that specifically addresses that one comment, and they can easily verify it by following the link.
 
 At the end of the review, when you've addressed all comments and your reviewers are OK with your pull request, you run a single `git rebase -i --autosquash` to put all your `fixup!` commits into where they belong. After all of this, you've got a clean history which has incorporated all your review suggestions!
 
-
 ## Other kinds of changes to old commits
 
 So far, we've only explored `pick` and `fixup`. However, rebase offers a lot of different options to change old commits:
+
 - `reword`: rewrite the message of an old commit
 - `drop`: just drop an old commit and pretend it never happened :face_with_peeking_eye:
 - `break`: stop there and interrupt the rebase. This allows you to make changes before git applies the next patch. You can continue by running `git rebase --continue`
@@ -218,7 +217,6 @@ So far, we've only explored `pick` and `fixup`. However, rebase offers a lot of 
 - and more!
 
 Check out the coments on your rebase file or git's official documentation for more rebase actions.
-
 
 ## Using alternative editors for the rebase file
 
@@ -230,17 +228,15 @@ git config --global core.editor "code --wait"
 
 Note that this will also make git use VSCode for editing commit messages, as they are also just regular files (try to `git commit` and then open `.git/COMMIT_MSG` to see for yourself).
 
-
 # Using `git reflog` to make sure you'll _never ever_ lose your work
 
 We've now seen how use `git rebase` to rewrite our past commits to change the base or our branch or address mistakes. What if, for some reason, we mess up a rebase and drop an important commit, or accidentally delete something we shouldn't have deleted?
 
 Well, even though `git rebase` changes your branch to point to the new rewritten commits, it will _never_ delete old commits unless you explicitly tell it to. In other words, even if you rewrite `a` as `a'` and `b` as `b'`, the original `a` and `b` won't get discarded. It can be hard to find them, though, since after the rebase there won't be any branches pointing to them. This is when you can use `git reflog`.
- 
+
 `git reflog` (reference log) is exactly what it says it is: a log of references. If you need to reference an old commit before a rebase, run `git reflog`, find its SHA, and `git checkout <sha>`. Now you're checked out at your old commit and you can recover your work!
 
 You can even configure how long git will wait before expiring very old reflog entries by setting `gc.reflogExpire` using `git config` (it defaults to 90 days). You can also prune very old reflog entries manually by running `git reflog expire` or `git reflog delete`.
-
 
 # Stacking pull requests
 
@@ -248,7 +244,7 @@ So far, we've talked about splitting your changes into good commits that are eas
 
 This isn't really a problem when we're implementing relatively simple changes that don't really need to be split into multiple smaller merges. However, imagine you're working on a big feature that possibly changes hundreds of files and contains a lot of different moving parts. It's probably a bad and risky idea to merge all of it at once. It's also not good etiquette to ask your reviewers to give one yes or no approval to one huge chunk of changes like this: they can't possibly reason about hundreds of files all at once, even if they do it commit by commit.
 
-That's when **stacked pull requests** come in. The idea is simple: you open a series of pull requests which branch off of each other, and work simultaneously on all of them, making sure to introduce each change on the pull requests where it belongs. 
+That's when **stacked pull requests** come in. The idea is simple: you open a series of pull requests which branch off of each other, and work simultaneously on all of them, making sure to introduce each change on the pull requests where it belongs.
 
 For example, let's say you're working on a frontend project feature which involves three major steps: refactoring some code, adding a new component, and using them to create a new page. In this case, one way to split your changes would be to create three major PRs that get reviewed and merged separately:
 
@@ -258,7 +254,7 @@ pull request 1: refactor components X, Y and Z
   commit b1: refactor component X
   commit c1: refactor component Y
   commit d1: refactor component Z
-  commit e1: add new tests to refactored components 
+  commit e1: add new tests to refactored components
 
 pull request 2: introduce new component A
   commit a2: create component A based on components X, Y and Z
@@ -270,22 +266,23 @@ pull request 3: introduce new page
 ```
 
 In terms of branch structure, your PRs should look like a "stack of branches"
+
 ```text
 x --- y --- z                                             (main)
        \
         a1 --- b1 --- c1 --- d1 --- e1                    (new-page/1-refactor)
                                      \
                                       a2 --- b2           (new-page/2-component-a)
-                                              \ 
+                                              \
                                                a3 --- b3  (new-page/3-create-page)
 ```
-
 
 ## Manually managing a stack of pull requests with `git rebase --onto`
 
 Now that you know what are PR stacks and when to use them, the next sections will dive into how you'd manually manage a stack. As you'll see, this process can be complicated and tedious, and [there are tools to make it much easier](#using-external-tools-to-manage-stacked-pull-requests), which I'd recommend you use in real life. Nonetheless, I think it's valuable to go over how this works in "pure git" so you can understand what these tools do under the hood.
 
 The first thing when dealing with a PR stack is creating the stack itself. This is as simple as `git branch`ing from parent to child. So, in our example, the stack would be created by doing:
+
 ```text
 git switch main
 
@@ -302,11 +299,13 @@ git switch new-page/3-create-page
 ```
 
 Then, once you're done, you can open the pull requests one by one in your Git host interface. Make sure to set the correct base branches, so in this case:
+
 - The PR for `new-page/1-refactor` requests to merge into `main`
 - The PR for `new-page/2-component-a` requests to merge into `new-page/1-refactor`
 - The PR for `new-page/3-create-page` requests to merge into `new-page/2-component-a`
 
 Now comes the fun part: one of your collaborators requested a change in the PR for `new-page/1-refactor`. You `git rebase` that branch, but you notice that `new-page/2-component-a` now contains the commits that were on the old `new-page/1-refactor` before the rebase. This is expected behavior, since `git rebase` creates a new set of commits based on the same changesets, so `new-page/1-refactor` is now a technically a different branch, which is not what `new-page/2-component-a` is based on. In other words, your branches now look like this:
+
 ```text
 x --- y --- z                                             (main)
       |\
@@ -315,7 +314,7 @@ x --- y --- z                                             (main)
         a1 --- b1 --- c1 --- d1 --- e1
                                      \
                                       a2 --- b2           (new-page/2-component-a)
-                                              \ 
+                                              \
                                                a3 --- b3  (new-page/3-create-page)
 ```
 
@@ -325,7 +324,7 @@ To solve this, we need to tell git that `a2`'s parent is actually `e1'` instead 
 
 Using more precise language, it means:
 
-> "find the child of commit `e1` that's reachable from the current `HEAD` and make its parent be commit `e1'`" 
+> "find the child of commit `e1` that's reachable from the current `HEAD` and make its parent be commit `e1'`"
 
 I know, this command looks a bit confusing, and it does take some practice to get used to it. A good way to memorize it is to think of it as `git rebase --onto <new-parent> <old-parent>`.
 
@@ -341,16 +340,16 @@ x --- y --- z                                             (main)
                                     | a2' -- b2'          (new-page/2-component-a)
                                      \
                                       a2 --- b2
-                                              \ 
+                                              \
                                                a3 --- b3  (new-page/3-create-page)
 ```
 
 We can do the same thing and run `git rebase --onto b2' b2` while checked out to `new-page/3-create-page` and that will bring the changes over to the last branch and we'll be fully synced. This process of syncing all branches in a stack is sometimes referred to as a "cascading rebase".
 
-
 ## Merging PR stacks: top-down and bottom-up
 
 You're done working on your pull request stack, and now you want to merge it back into `main`. There are two approaches to this:
+
 - top-down: merge the base of the stack onto `main`, then its child onto `main`, then the child's child onto `main` and so on until everything is merged. Using our example:
   - merge `new-page/1-refactor` onto `main`
   - merge `new-page/2-component-a` onto `main`
@@ -360,7 +359,7 @@ You're done working on your pull request stack, and now you want to merge it bac
   - merge `new-page/2-component-a` onto `new-page/1-refator`
   - merge `new-page/1-refactor` onto `main`
 
-The vast majority of times, I find myself merging **top-down**, for two reasons. 
+The vast majority of times, I find myself merging **top-down**, for two reasons.
 
 The first reason is that (95% of the time) the whole purpose of PR stacks is to split a big piece of work into multiple mergeable units. Since that is usually the primary goal, it doesn't really make sense to merge bottom-up, as that combines all pull requests into the base PR, and I'd end up merging one big chunk of code into `main` nonetheless.
 
@@ -368,11 +367,9 @@ The second reason I usually merge top down is that the parent PRs are usually mo
 
 All that said, I will sometimes opt to merge bottom-up if the reason for creating a stack was solely facilitating/isolating reviews, but it still makes sense to merge it all as one single unit of work. If that's the case, I'll usually wait until all children are _fully_ reviewed and approved to collapse the stack back into the root PR.
 
-
 ## Using `git rebase --onto` when merging top-down
 
 Let's say you chose to merge the PR stack top-down, and you're done merging the base PR (`new-page/1-refactor`). You navigate to the second PR, but you notice now there are a ton of merge conflicts. Let's take a look at what our branches look like after the merge
-
 
 ```text
 x --- y --- z ------------------------ m                    (main)
@@ -380,7 +377,7 @@ x --- y --- z ------------------------ m                    (main)
         a1 --- b1 --- c1 --- d1 --- e1
                                       \
                                        a2 --- b2            (new-page/2-component-a)
-                                                \ 
+                                                \
                                                  a3 --- b3  (new-page/3-create-page)
 ```
 
@@ -396,24 +393,26 @@ x --- y --- z ------------------------ m                      (main)
         a1 --- b1 --- c1 --- d1 --- e1   a2' -- b2'           (new-page/2-component-a)
                                      \
                                       -- a2 --- b2
-                                                  \ 
+                                                  \
                                                    a3 --- b3  (new-page/3-create-page)
 ```
 
-We've successfully removed the duplicated patches, and we won't get any conflicts when we merge `new-page/2-component-a` onto `main` since we're now only trying to merge `a2` and `b2`. We're ready to merge the second PR! Note that in this case we won't bother syncing `new-page/3-create-page` since, after merging its parent onto main, we'd have to resync all over again. 
+We've successfully removed the duplicated patches, and we won't get any conflicts when we merge `new-page/2-component-a` onto `main` since we're now only trying to merge `a2` and `b2`. We're ready to merge the second PR! Note that in this case we won't bother syncing `new-page/3-create-page` since, after merging its parent onto main, we'd have to resync all over again.
 
 After merging the second PR, our tree looks like this
+
 ```text
 x --- y --- z ------------------------ m ---------- m2         (main)
        \                              / \          /
         a1 --- b1 --- c1 --- d1 --- e1   a2' --- b2'           (new-page/2-component-a)
                                      \
                                       -- a2 --- b2
-                                                  \ 
+                                                  \
                                                    a3 --- b3   (new-page/3-create-page)
 ```
 
 Now, let's sync the third PR by first checking out to it, then running `git rebase --onto m2 b2`. Our tree is now
+
 ```text
 x --- y --- z ------------------------ m ---------- m2             (main)
        \                              / \          /  \
@@ -421,6 +420,7 @@ x --- y --- z ------------------------ m ---------- m2             (main)
 ```
 
 We can finally merge the last PR. After that, the tree is
+
 ```text
 x --- y --- z ------------------------ m ---------- m2 ---------- m3             (main)
        \                              / \          /  \          /
@@ -428,7 +428,6 @@ x --- y --- z ------------------------ m ---------- m2 ---------- m3            
 ```
 
 Hooray! :confetti_ball:
-
 
 ## Using external tools to manage stacked pull requests
 
@@ -440,17 +439,18 @@ Luckily, very smart people have also faced this problem and created out-of-the-b
 - [Graphite](https://graphite.dev/): It started out as tool which only managed PR stacks, but over time it's evolved extra bells and whistles such as its own review interface, insights page, merge queue and VSCode extension. It requires mandatory signup and larger companies are required to pay for it if they want to use it.
 - [spr](https://ejoffe.github.io/spr/) and [ghstack](https://github.com/ezyang/ghstack): these tools are _very opinionated_ as they completely abstract away the concept of "branches" and force you to commit directly to `main`. Then, they open one pull request per commit and that's your stack. Personally, I think this approach is a little too limiting because in real life you're often going to have to implement larger things that can't be easily separated into one commit at a time. Some people seem to like this, so I'm leaving these here so it's up to you to judge for yourself!
 
-
 ## Should you stack another PR or adding more commits to the existing PR?
 
 Getting the right balance between adding commits versus opening a new PR is very reliant on team/project dynamics and taste. There is no clear line between what's right and what's wrong.
 
 In the example I chose, I divided the feature into 3 steps. You could argue this could be divided even further, since the first PR groups refactoring of 3 different components and that could be split into 3 separate PRs. You wouldn't be wrong! However, as with many other things, in the real world you should decide at which point to stop. Stacking too many PRs can also create its own set of problems which decrease your productivity:
+
 - The more PRs you open, the more things you need to keep track of, and the more reviews you'll need to ask for
 - You potentially stagger the discussion across multiple different pages
 - If you're _too_ granular, you're just introducing extra overhead and thrash without gaining much out of it. Remember, the problem we were trying to solve in the first place is allowing separate merges/reviews
 
 When considering whether to split your current changes into another pull request, first ask yourself the following questions:
+
 - Can this new piece of work be merged separately? Does it make sense to do so? If the answer to any of these is no, don't stack another PR.
 - Is there any advantage to merging this new chunk of work separately?
   - Maybe merging it separately is less risky
@@ -461,18 +461,17 @@ When considering whether to split your current changes into another pull request
   - Or maybe there's no advantage to it and you're just adding extra complexity for no reason. If that's the case, don't stack another PR.
 
 Personally, I try to follow these very general guidelines:
+
 - If my PR is blocking for a collaborator's work, I'll ask for review and merge it ASAP, and I continue the rest of the work in a separate stacked PR.
 - If my PR is getting longer than 6-8 commits and there's still significant work to be done, I'll open a stacked PR
 - If the rest of the work is very different and would distract from the overall "theme" of the PR, I'll open a stacked PR
 - If I have to do some kind of bulk work that will change a ton of files all in the same way (renaming, formatting, adding a new parameter to all callsites etc), I'll open a stacked PR just for that. This avoids polluting the changeset of other PRs in the stack and keeps reviews cleaner.
-
 
 ## A common pitfall of stacked pull requests
 
 As the name suggests, a stack of pull requests is a stack (duh): you can't access the bottom element without first removing all the elements which are on top of it. As such, you won't be able to merge a PR that is down the stack without merging its parent first. In other words, there is a strict merge order: first you merge the parent, then its child, then the child's child and so on.
 
 Due to this, avoid stacking PRs when it's not necessary. If you're making two changes that are completely independent of each other (i.e they can be merged in any order), you'll be better off by branching both of them off of `main` to keep this independence. Otherwise, you'll be forced to merge your PR stack in order, which could be blocking and unnecessarily delay merges in case the child is ready before the parent.
-
 
 # Combining it all
 
@@ -491,7 +490,6 @@ After learning all of this, your new, enhanced git workflow should look like
 That's all! I hope this helps you write better commit histories and pull requests as much as it helped me! :heart:
 
 \- Lucas
-
 
 # Acknowledgements
 
