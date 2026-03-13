@@ -9,3 +9,7 @@ enableEmoji = true
 [author]
   name = 'serramatutu'
   homepage = 'serramatutu.io'
+
+[markup]
+  [markup.highlight]
+    noClasses = false

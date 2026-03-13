@@ -199,28 +199,15 @@ p.subtitle {
 .dimmed {
   color: var(--text-dim-weak);
 }
-.highlight {
-  color: var(--text-highlight);
-}
 
-pre {
-  overflow-x: scroll;
-}
-
-code {
+code, .highlight {
   background-color: var(--text-dim-mega);
-  padding: 3px;
+  font-family: "Hack";
   border-radius: 3px;
 
-  overflow-x: scroll;
-
-  font-family: "Hack";
-
-  & > span {
-    padding: 0 20px 0 20px;
-
-    &::first-child() {
-      padding-top: 20px;
-    }
+  & pre {
+    overflow-x: scroll;
+    min-height: auto;
+    padding: 20px;
   }
 }
