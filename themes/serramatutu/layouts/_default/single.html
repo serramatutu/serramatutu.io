@@ -3,9 +3,18 @@
   <h1 class="page-title">{{ .Title }}</h1>
 
     {{ if compare.Default true $.Params.show_date | and .Lastmod }}
-    {{ $date := .Lastmod | time.Format "2006-01-02T15:04:05-07:00" }}
-    {{ $prettyDate := $date | time.Format ":date_medium" }}
-    <time pubdate datetime="{{ $date }}">last updated {{ $prettyDate }}</time>
+
+    {{ $published := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
+    {{ $prettyPublished := $published | time.Format ":date_medium" }}
+
+    <time pubdate datetime="{{ $published }}">published {{ $prettyPublished }}</time>
+
+    {{ if not (eq .Lastmod .Date) }}
+      {{ $lastmod := .Lastmod | time.Format "2006-01-02T15:04:05-07:00" }}
+      {{ $prettyLastmod := $lastmod | time.Format ":date_medium" }}
+      <time lastmoddate datetime="{{ $lastmod }}">, last updated {{ $prettyLastmod}}</time>
+    {{ end }}
+
     {{ end }}
 
     {{ $isSmallSummary := strings.RuneCount .Summary | compare.Ge site.Params.smallSummaryThreshold }}
@@ -17,7 +26,31 @@
 
     {{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
   </div>
+
+  {{ with .Params.edits }}
+    {{ if gt (len .) 0 }}
+    <div class="content">
+      <p>This page has been edited. The edit history is <a href="#edits">at the bottom</a>.</p>
+    </div>
+    {{ end }}
+  {{ end }}
+
   <div class="content">
   {{ .Content }}
   </div>
+
+  {{ with .Params.edits }}
+    {{ if gt (len .) 0 }}
+    <div id="edits">
+      <h1>Edits</h1>
+      <ul>
+      {{ range .Params.edits }}
+        {{ $date := .date | time.Format "2006-01-02T15:04:05-07:00" }}
+        {{ $prettyDate := $date | time.Format ":date_medium" }}
+        <li><time edit datetime="{{ $date }}">{{ $prettyDate }}</time>: {{ .description }}</li>
+      {{ end }}
+      </ul>
+    </div>
+    {{ end }}
+  {{ end }}
 {{ end }}

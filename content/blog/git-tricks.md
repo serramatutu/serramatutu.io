@@ -6,8 +6,11 @@ summary: |
   However, these are usually not enough to guarantee you produce clean commit histories and good and easy 
   to review pull requests. They're also not enough to recover your work when you inevitably screw up.
   This blog post will address all these things by explaining some techniques I wish I had learned earlier.
+date: 2024-10-22
 lastmod: 2024-10-22
 layout: single
+params:
+  edits: []
 ---
 
 # Preface
