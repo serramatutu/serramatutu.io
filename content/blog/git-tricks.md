@@ -7,10 +7,12 @@ summary: |
   to review pull requests. They're also not enough to recover your work when you inevitably screw up.
   This blog post will address all these things by explaining some techniques I wish I had learned earlier.
 date: 2024-10-22
-lastmod: 2024-10-22
+lastmod: 2026-03-18
 layout: single
 params:
-  edits: []
+  edits:
+    - date: 2026-03-18
+      description: Added [section](#using---update-refs) about `--update-refs` for cascading rebases
 ---
 
 # Preface
@@ -282,7 +284,7 @@ x --- y --- z                                             (main)
 
 ## Manually managing a stack of pull requests with `git rebase --onto`
 
-Now that you know what are PR stacks and when to use them, the next sections will dive into how you'd manually manage a stack. As you'll see, this process can be complicated and tedious, and [there are tools to make it much easier](#using-external-tools-to-manage-stacked-pull-requests), which I'd recommend you use in real life. Nonetheless, I think it's valuable to go over how this works in "pure git" so you can understand what these tools do under the hood.
+Now that you know what are PR stacks and when to use them, the next sections will dive into how you'd manually manage a stack. As you'll see, this process can be complicated and tedious, and [there are tools to make it much easier](#manage-stacked-pull-requests-more-efficiently), which I'd recommend you use in real life. Nonetheless, I think it's valuable to go over how this works in "pure git" so you can understand what these tools do under the hood.
 
 The first thing when dealing with a PR stack is creating the stack itself. This is as simple as `git branch`ing from parent to child. So, in our example, the stack would be created by doing:
 
@@ -432,13 +434,25 @@ x --- y --- z ------------------------ m ---------- m2 ---------- m3            
 
 Hooray! :confetti_ball:
 
-## Using external tools to manage stacked pull requests
+## Manage stacked pull requests more efficiently
 
 I just taught you how to manually manage a PR stack. As you've probably noticed, it's not the easiest thing in the world. You have to keep all the branches in sync, be careful to merge and rebase in the correct order, make sure you track of all the reviews and incorporate feedback all at the right place. It's a lot of different commands to run, and all of this can be a lot on the mind. It's error-prone and time-consuming.
 
-Luckily, very smart people have also faced this problem and created out-of-the-box solutions for managing PR stacks automatically. This blog post is not a tutorial on any of those tools, so the following is a brief summary of each of them. You can check them out by yourself and choose which one fits your workflow best. Personally, I like to use Git Town for its simplicity, but I know excellent engineers which use Graphite, others who prefer to go the manual `git rebase` way, and others who created their own bespoke collection of bash and python scripts to manage stacks. There's no right or wrong as long as you choose what works for you and your team.
+### Using `--update-refs`
 
-- [Git Town](https://www.git-town.com/): A high level Git CLI which adds a few extra commands such as `git town sync` for cascading rebases across a stack, `git town propose` to automatically open a PR for the current branch and `git town ship` to merge a PR and rebase its children.
+git has a native solution to cascading rebases: `--update-refs`. According to git's documentation, this is what it does:
+
+> Automatically force-update any branches that point to commits that are being rebased.
+
+So instead of having to do multiple `git rebase --onto` one after the other, by using `--update-refs` you can only do one `git rebase --update-refs --onto main a1~1` while checked out at `new-page/3-create-page`, and this will update the intermediate refs, i.e automatically move `new-page/1-refactor` and `new-page/2-component-a` to the rebased history. You can also set `rebase.updateRefs=true` in your git config to always default to that option. This is what I personally use in my own setup.
+
+Please note that you'll still have to force push all your branches manually back to your remote, just like you would with manual cascading rebases.
+
+### External tools
+
+Alternatively, very smart people have also faced this problem and created their own solutions for managing PR stacks automatically. This blog post is not a tutorial on any of those tools, so the following is a brief summary of each of them. You can check them out by yourself and choose which one fits your workflow best. Personally, I don't use any of them and stick to `--update-refs`, but I know excellent engineers which use Graphite and Git Town, others who prefer to go the manual `git rebase` way, and others who created their own bespoke collection of bash and python scripts to manage stacks. There's no right or wrong as long as you choose what works for you and your team.
+
+- [Git Town](https://www.git-town.com/): A high level Git CLI which adds a few extra commands such as `git town sync` for cascading rebases across a stack, `git town propose` to automatically open PRs for the current stack and `git town ship` to merge a PR and rebase its children.
 - [Graphite](https://graphite.dev/): It started out as tool which only managed PR stacks, but over time it's evolved extra bells and whistles such as its own review interface, insights page, merge queue and VSCode extension. It requires mandatory signup and larger companies are required to pay for it if they want to use it.
 - [spr](https://ejoffe.github.io/spr/) and [ghstack](https://github.com/ezyang/ghstack): these tools are _very opinionated_ as they completely abstract away the concept of "branches" and force you to commit directly to `main`. Then, they open one pull request per commit and that's your stack. Personally, I think this approach is a little too limiting because in real life you're often going to have to implement larger things that can't be easily separated into one commit at a time. Some people seem to like this, so I'm leaving these here so it's up to you to judge for yourself!
 
@@ -486,8 +500,8 @@ After learning all of this, your new, enhanced git workflow should look like
 - Fix your past mistakes and edit past commits with `git rebase -i` and `git commit --fixup`
 - Use `git reflog` in case you screw up a rebase or need to inspect dropped commits
 - Once (and if) you start working on a new chunk of work that can be merged separately, create a child branch `my-feature/2-my-other-chunk-of-work`
-- Sync all your working branches manually with `git rebase --onto`, or with tools like Git Town or Graphite
-- Once it's approved, rebased and ready to be merged, merge the first PR into `main`, and rebase the second PR onto the updated main by using `git rebase --onto` (or Git Town/Graphite)
+- Sync all your working branches manually with `git rebase --update-refs --onto`, or with tools like Git Town or Graphite
+- Once it's approved, rebased and ready to be merged, merge the first PR into `main`, and rebase the second PR onto the updated main by using `git rebase --update-refs --onto` (or Git Town/Graphite)
 - Merge the second PR after the base PR has been merged.
 
 That's all! I hope this helps you write better commit histories and pull requests as much as it helped me! :heart:

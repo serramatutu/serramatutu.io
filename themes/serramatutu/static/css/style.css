@@ -105,6 +105,10 @@ time[lastmoddate] {
   color: var(--text-dim-weak);
 }
 
+time[edit] {
+  font-weight: bold;
+}
+
 p.summary {
   font-style: italic;
 }

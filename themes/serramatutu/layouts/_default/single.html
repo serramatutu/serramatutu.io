@@ -44,10 +44,10 @@
     <div id="edits">
       <h1>Edits</h1>
       <ul>
-      {{ range .Params.edits }}
+      {{ range . }}
         {{ $date := .date | time.Format "2006-01-02T15:04:05-07:00" }}
         {{ $prettyDate := $date | time.Format ":date_medium" }}
-        <li><time edit datetime="{{ $date }}">{{ $prettyDate }}</time>: {{ .description }}</li>
+        <li><time edit datetime="{{ $date }}">{{ $prettyDate }}</time>: {{ .description | markdownify }}</li>
       {{ end }}
       </ul>
     </div>
