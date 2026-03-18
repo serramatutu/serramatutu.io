@@ -4,6 +4,8 @@ description: "My long-form resume with more details about my past professional a
 summary: "This page aims to document my past work and academic experiences in higher detail. You can think of it as a long-form resume."
 lastmod: 2025-11-27
 layout: single
+params:
+  nav: true
 ---
 
 # High school

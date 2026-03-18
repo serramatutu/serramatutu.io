@@ -10,6 +10,7 @@ date: 2024-10-22
 lastmod: 2026-03-18
 layout: single
 params:
+  nav: true
   edits:
     - date: 2026-03-18
       description: Added [section](#using---update-refs) about `--update-refs` for cascading rebases

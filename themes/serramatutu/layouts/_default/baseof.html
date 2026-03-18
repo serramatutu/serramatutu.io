@@ -2,12 +2,17 @@
 <html lang="{{ .Site.LanguageCode }}">
 {{ partial "head.html" }}
 <body>
-  <div class="main-container">
-    {{ partial "header.html" }}
-    <main>
-      {{ block "main" . }}{{ end }}
-    </main>
-    {{ partial "footer.html" }}
+  <div class="body">
+    {{ if page.Params.nav }}
+      {{ partial "sidenav.html" }}
+    {{ end }}
+    <div class="main-container">
+      {{ partial "header.html" }}
+      <main>
+        {{ block "main" . }}{{ end }}
+      </main>
+      {{ partial "footer.html" }}
+    </div>
   </div>
 </body>
 </html>
