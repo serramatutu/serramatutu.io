@@ -66,6 +66,8 @@ aside {
     display: none;
   }
 
+  border-left: 1px solid var(--text-dim-mega);
+
   min-width: 250px;
   max-width: 250px;
   padding: 15px;
