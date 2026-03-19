@@ -30,20 +30,25 @@ body {
 }
 
 div.body {
-  @media (min-width: 500px) {
+  @media (min-width: 1200px) {
     display: flex;
   }
-
   justify-content: center;
   margin: 0 auto;
 }
 
 div.main-container {
-  @media (min-width: 500px) {
-    display: flex;
-    flex-flow: column;
-    height: 100vh;
+  @media (min-width: 1200px) {
+    width: 100%;
   }
+  @media (max-width: 1200px) {
+    margin: 0 auto;
+  }
+
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  flex-flow: column;
 
   max-width: 900px;
   padding: 0 25px 0 25px;
@@ -52,10 +57,8 @@ div.main-container {
 }
 
 main {
-  @media (min-width: 500px) {
-    overflow-y: auto;
-  }
-
+  overflow-y: auto;
+  scroll-behavior: smooth;
   position: relative;
   max-height: 100%;
 }
@@ -81,43 +84,63 @@ aside {
 }
 
 /* header navbar */
-header nav {
-  font-size: 1.3em;
-  border-bottom: 1px solid var(--text-dim-mega);
+header {
+  position: sticky;
 
-  margin-bottom: 20px;
+  & nav {
+    font-size: 1.3em;
+    border-bottom: 1px solid var(--text-dim-mega);
 
-  & > ul {
-    padding-left: 0;
-    padding-right: 0;
-    font-weight: bold;
+    margin-bottom: 20px;
 
-    margin: 10px 0 10px 0;
+    display: flex;
+    justify-content: space-between;
 
-    & > li {
-      display: inline-block;
-      list-style-type: none;
-      margin: 5px 10px 5px 0;
+    & > ul {
+      padding-left: 0;
+      padding-right: 0;
+      font-weight: bold;
 
-      &::before {
-        display: none;
+      margin: 10px 0 10px 0;
+
+      &.accessibility {
+        @media (min-height: 650px) {
+          display: none;
+        }
       }
 
-      &:hover {
-        text-decoration: underline;
-      }
-    }
+      & > li {
+        display: inline-block;
+        list-style-type: none;
+        margin: 5px 10px 5px 0;
 
-    & * {
-      /* color: var(--text-header); */
-      text-decoration: none;
+        &::before {
+          display: none;
+        }
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      & * {
+        /* color: var(--text-header); */
+        text-decoration: none;
+      }
     }
   }
 }
 
 /* header and footer */
 
+header nav {
+}
+
 footer {
+  @media (max-height: 650px) {
+    display: none;
+  }
+
   text-align: center;
   border-top: 1px solid var(--text-dim-mega);
 }
@@ -133,7 +156,7 @@ div.preface {
 h1.page-title {
   color: var(--text-body);
 
-  font-size: 3.5vh;
+  font-size: 2.5em;
 
   padding: 5px 15px 5px 0;
 
