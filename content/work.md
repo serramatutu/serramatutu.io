@@ -222,18 +222,19 @@ I definitely did not do all this alone, and had an excellent engineer alongside 
 - Writing most of the [product documentation](https://docs.getdbt.com/docs/cloud-integrations/semantic-layer/power-bi)
 - Writing internal documentation and recording enablement videos to showcase how it works to our GTM org, who would be the ones selling it on the field
 
-## dbt Fusion
+## dbt Core v2
 
 After working for so long on the Semantic Layer, I felt like it was time to explore something new. At this point I was already very curious about Rust and systems-level programming, and I wanted to start making a transition towards being a systems engineer.
 
-This is why I moved over to the [dbt Fusion](https://github.com/dbt-labs/dbt-fusion) Adapters team. This team works mainly on the I/O integration with different data warehouse products, and on standardizing them (to the extent possible) for use with dbt.
+This is why I moved over to the [dbt Core v2](https://github.com/dbt-labs/dbt) Adapters team. This team works mainly on the I/O integration with different data warehouse products, and on standardizing them (to the extent possible) for use with dbt.
 
 There, so far, I've worked on:
 
-- Patching countless bugs and [dbt Core](https://github.com/dbt-labs/dbt-core) compatibility issues
+- Patching countless bugs and [dbt Core v1](https://github.com/dbt-labs/dbt) compatibility issues
 - Fixing data type issues that were plaguing us and our users. This required changes to the open source [ADBC driver](https://github.com/apache/arrow-adbc/pull/3604) and writing a more robust black-box [testing framework for our data types](https://github.com/dbt-labs/dbt-fusion/commit/6b87561c0de81e886d2c43e48c856c538e4fd4d1)
 - Adding support for BigQuery's [materialized views](https://docs.cloud.google.com/bigquery/docs/materialized-views-intro)
 - Refactoring some code to make it easier to add new adapter types and maintain them over time as our "portfolio" of adapters grows
+- Improving our internal observability stack with Datadog
 
 I would say the biggest challenge on working on this team is, in summary:
 
@@ -241,7 +242,8 @@ I would say the biggest challenge on working on this team is, in summary:
 
 ## Apache Arrow
 
-dbt Fusion makes heavy use of [Apache Arrow](https://arrow.apache.org/) and [DataFusion](https://datafusion.apache.org/). So far, I have contributed to the Arrow project by:
+dbt Fusion makes heavy use of [Apache Arrow](https://arrow.apache.org/). So far, I have contributed to the Arrow project by:
 
-- Submitting patches to [ADBC](https://github.com/apache/arrow-adbc/), mainly to improve their [BigQuery](https://cloud.google.com/bigquery) support.
-- (Alongside my great coworker Felipe) [Proposing](https://lists.apache.org/thread/h0ghltfds2bh6vvrkg7n787c1q4n0y5p) a new `arrow.timestamp_with_offset` canonical extension type to improve support for timestamps with timezone offsets per row. This involved a lot of back and forth discussion with the Arrow community, writing the Go and Rust implementation and attending to Arrow developer meetings.
+- Submitting patches and reviews to [ADBC](https://github.com/apache/arrow-adbc/), mainly to improve their [BigQuery](https://cloud.google.com/bigquery) support. I've also helped make the [Spark](https://github.com/adbc-drivers/spark) driver. One of the features in ADBC 1.2 regarding platform-specific operations stemmed from a discussion in [one of my PRs to ADBC BigQuery](https://github.com/adbc-drivers/bigquery/pull/279).
+- (Alongside my great coworker Felipe) [Proposing](https://lists.apache.org/thread/h0ghltfds2bh6vvrkg7n787c1q4n0y5p) a new `arrow.timestamp_with_offset` canonical extension type to improve support for timestamps with timezone offsets per row. This involved a lot of back and forth discussion with the Arrow community, writing the Go and Rust implementation and attending to Arrow developer meetings. The Go implementation helped uncover some issues with nested struct nullability and JSON parsing, which I fixed in followup PRs.
+- I've helped review PRs and ship fixes to [arrow-go](https://github.com/apache/arrow-go/), including a refactor of their [JSON parser](https://github.com/apache/arrow-go/pull/833) to make it in line with Arrow C++ behavior.
