@@ -116,7 +116,7 @@ Despite those technical challenges, my main challenge for this project was commu
 
 ## Boards
 
-At Transform, we were building a Semantic Layer (which I still work on at dbt Labs!), through which users could define and query their business metrics. At the time, we were building our own querying interface which was similar to a BI tool. It allowed users to pick from different chart types, slice by different dimensions and save their queries. One of the components of such interface was named "Boards", and it gave users the ability to create and save their own dashboards with many charts, sections etc.
+At Transform, we were building a Semantic Layer, through which users could define and query their business metrics. At the time, we were building our own querying interface which was similar to a BI tool. It allowed users to pick from different chart types, slice by different dimensions and save their queries. One of the components of such interface was named "Boards", and it gave users the ability to create and save their own dashboards with many charts, sections etc.
 
 Me and another backend engineer were responsible for the database and APIs. We chose to model a dashboard as a tree of components, since it could contain sections within sections with many charts. In the Postgres database, each Board's metadata was stored in a `boards` table, and each node contained in a dashboard was stored in a `board_nodes` table, which was indexed by `board_id`. This made it easy to reconstruct the tree from top to bottom using a single SQL query similar to the following
 
